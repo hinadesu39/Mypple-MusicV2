@@ -1,0 +1,6 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cv="clr-namespace:Mypple_MusicV2.Converters">
+    <cv:VolumeValue2StateConverter x:Key="VolumeValue2State" />
+    <cv:Double2TimeSpanConverter x:Key="Double2TimeSpan" />
+</ResourceDictionary>

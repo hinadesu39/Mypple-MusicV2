@@ -1,0 +1,36 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="WindowDefaultStyleKey"
+           TargetType="{x:Type Window}">
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <!--  CornerRadius必须设置为0，否则在win7上，界面上方两侧外边框无法闭合  -->
+                <WindowChrome CornerRadius="0"
+                              CaptionHeight="60"
+                              GlassFrameThickness="0 1 0 0"
+                              ResizeBorderThickness="5"
+                              UseAeroCaptionButtons="False" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Window}">
+                    <Border BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            UseLayoutRounding="True">
+                        <AdornerDecorator>
+                            <ContentPresenter ClipToBounds="True" />
+                        </AdornerDecorator>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="WindowState"
+                     Value="Maximized">
+                <Setter Property="BorderThickness"
+                        Value="8" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

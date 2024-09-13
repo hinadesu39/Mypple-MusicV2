@@ -8,7 +8,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Converters/Converters.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="IconFont">pack://application:,,,/Mypple MusicV2;component/Resources/#iconfont</FontFamily>
         </ResourceDictionary>
+        
     </Application.Resources>
 </Application>

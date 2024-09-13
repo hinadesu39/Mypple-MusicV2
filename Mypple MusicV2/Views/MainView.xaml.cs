@@ -22,6 +22,27 @@ namespace Mypple_MusicV2.Views
         public MainView()
         {
             InitializeComponent();
+            btn_Min.Click += (s, e) =>
+            {
+                this.WindowState = WindowState.Minimized;
+            };
+            btn_Max.Click += (s, e) =>
+            {
+                if (this.WindowState == WindowState.Maximized)
+                {
+                    this.WindowState = WindowState.Normal;
+                    btn_Max.Content = "\uE65D";
+                }
+                else
+                {
+                    this.WindowState = WindowState.Maximized;
+                    btn_Max.Content = "\uE601";
+                }
+            };
+            btn_Close.Click += (s, e) =>
+            {
+                this.Close();
+            };
         }
     }
 }

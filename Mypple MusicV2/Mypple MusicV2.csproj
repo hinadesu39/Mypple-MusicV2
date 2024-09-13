@@ -10,13 +10,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="UserControls\" />
+	  <None Remove="Resources\hatsune.png" />
+	  <None Remove="Resources\iconfont.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Folder Include="Models\" />
-		<Folder Include="Resouces\" />
 		<Folder Include="Services\" />
-		<Folder Include="Converters\" />
 		<Folder Include="Behaviors\" />
-		<Folder Include="Styles\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -27,6 +28,15 @@
 		<PackageReference Include="RestSharp" Version="112.0.0" />
 		<PackageReference Include="Serilog" Version="4.0.1" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\hatsune.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\iconfont.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 </Project>
