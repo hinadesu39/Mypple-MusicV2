@@ -54,7 +54,7 @@
                                MinHeight="{TemplateBinding MinHeight}" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TickBar x:Name="TopTick"
+            <!--<TickBar x:Name="TopTick"
                      Fill="{TemplateBinding Foreground}"
                      Height="4"
                      Margin="0,0,0,2"
@@ -67,7 +67,7 @@
                      Margin="0,2,0,0"
                      Placement="Bottom"
                      Grid.Row="2"
-                     Visibility="Collapsed" />
+                     Visibility="Collapsed" />-->
             <Border x:Name="TrackBackground"
                     Background="{TemplateBinding Background}"
                     Grid.Row="1"
@@ -106,7 +106,7 @@
                 </Track.Thumb>
             </Track>
         </Grid>
-        <ControlTemplate.Triggers>
+        <!--<ControlTemplate.Triggers>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="hc:TipElement.Placement"
@@ -156,7 +156,7 @@
                         TargetName="Canvas_SelectionRange"
                         Value="Visible" />
             </Trigger>
-        </ControlTemplate.Triggers>
+        </ControlTemplate.Triggers>-->
     </ControlTemplate>
     <Style x:Key="MusicProgressStyle"
            BasedOn="{StaticResource BaseStyle}"

@@ -6,5 +6,7 @@
         <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Styles/VolumeControlStyle.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Styles/WindowStyle.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Styles/SliderStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Styles/ListBoxStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Mypple MusicV2;component/Styles/ExpanderStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

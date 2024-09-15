@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mypple_MusicV2.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,28 @@ namespace Mypple_MusicV2.UserControls
         public PlaybackControlBar()
         {
             InitializeComponent();
+            var mainView = Application.Current.MainWindow as MainView;
+            btn_Min.Click += (s, e) =>
+            {
+                mainView.WindowState = WindowState.Minimized;
+            };
+            btn_Max.Click += (s, e) =>
+            {
+                if (mainView.WindowState == WindowState.Maximized)
+                {
+                    mainView.WindowState = WindowState.Normal;
+                    btn_Max.Content = "\uE65D";
+                }
+                else
+                {
+                    mainView.WindowState = WindowState.Maximized;
+                    btn_Max.Content = "\uE601";
+                }
+            };
+            btn_Close.Click += (s, e) =>
+            {
+                mainView.Close();
+            };
         }
     }
 }
