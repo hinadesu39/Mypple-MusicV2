@@ -6,14 +6,16 @@
         xmlns:cc="clr-namespace:Mypple_MusicV2.CustomControls"
         xmlns:uc="clr-namespace:Mypple_MusicV2.UserControls"
         xmlns:hc="https://handyorg.github.io/handycontrol"
-        xmlns:local="clr-namespace:Mypple_MusicV2.Views"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:v="clr-namespace:Mypple_MusicV2.Views"
         xmlns:vm="clr-namespace:Mypple_MusicV2.ViewModels"
+        xmlns:bh="clr-namespace:Mypple_MusicV2.Behaviors"
         mc:Ignorable="d"
         Title="MainView"
         Height="720"
         Width="1280"
         WindowStartupLocation="CenterScreen"
-        Background="White"
+        Background="Transparent"
         Foreground="{DynamicResource PrimaryTextBrush}"
         Style="{StaticResource WindowDefaultStyleKey}">
     <d:Window.DataContext>
@@ -33,13 +35,18 @@
                 BorderBrush="{DynamicResource BorderBrush}" />
         <uc:PlaybackControlBar Grid.Column="1" />
         <StackPanel Orientation="Horizontal">
+            <Button Content="&#xe65c;"
+                    Style="{StaticResource FlatIconButtonStyle}"
+                    Command="{Binding GoBackCommand}"
+                    Margin="10 0 0 0"
+                    ToolTip="返回" />
             <TextBlock FontFamily="{StaticResource IconFont}"
                        Text="&#xe66c;"
                        FontSize="18"
                        Foreground="PaleVioletRed"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       Margin="30 10 10 10" />
+                       Margin="10" />
             <TextBlock Text="Mypple Music"
                        VerticalAlignment="Center"
                        FontSize="13" />
@@ -50,75 +57,62 @@
                           Height="32"
                           hc:InfoElement.Placeholder="搜索"
                           hc:InfoElement.ShowClearButton="True"
+                          Background="#10000000"
                           Style="{StaticResource SearchBarPlus}" />
-            <ListBox Style="{StaticResource NavigationBarStyle}"
-                     d:ItemsSource="{d:SampleData ItemCount=4}"
-                     ItemsSource="{Binding NavigationItems}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
+            <TreeView ItemsSource="{Binding NavigationItems}"
+                      Style="{StaticResource NavigationBarStyle}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction Command="{Binding NavigateCommand}"
+                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=TreeView},Path=SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <i:Interaction.Behaviors>
+                    <bh:NavigationBehavior />
+                </i:Interaction.Behaviors>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubNavigationItems}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Content}"
                                        FontSize="20"
-                                       Margin="10"
+                                       Margin="6 6"
                                        FontFamily="{StaticResource IconFont}" />
                             <TextBlock Text="{Binding ToolTip}"
                                        FontSize="14"
-                                       Margin="10"
+                                       Margin="10 6"
                                        FontFamily="{StaticResource IconFont}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Expander Header="播放列表"
-                      FontSize="14"
-                      Tag="&#xea86;"
-                      Margin="3 0"
-                      Style="{StaticResource PlayListExpanderStyle}">
-                <ListBox Style="{StaticResource NavigationBarStyle}"
-                         ItemsSource="{Binding PlayListItems}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Content}"
-                                           FontSize="20"
-                                           Margin="30 10 10 10"
-                                           FontFamily="{StaticResource IconFont}" />
-                                <TextBlock Text="{Binding ToolTip}"
-                                           FontSize="14"
-                                           Margin="10"
-                                           FontFamily="{StaticResource IconFont}"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Expander>
-            <!--<Button Content="&#xe600;"
-                    Style="{StaticResource FlatIconButtonStyle}"
-                    Height="40"
-                    ToolTip="单击搜索" />
-            <Button Content="&#xe74f;"
-                    Style="{StaticResource FlatIconButtonStyle}"
-                    Height="40"
-                    ToolTip="最近添加" />
-            <Button Content="&#xe895;"
-                    Style="{StaticResource FlatIconButtonStyle}"
-                    Height="40"
-                    ToolTip="艺人" />
-            <Button Content="&#xea0b;"
-                    Style="{StaticResource FlatIconButtonStyle}"
-                    Height="40"
-                    ToolTip="专辑" />
-            <Button Content="&#xe612;"
-                    Style="{StaticResource FlatIconButtonStyle}"
-                    Height="40"
-                    ToolTip="歌曲" />
-            <Button Content="&#xea86;"
-                    Style="{StaticResource FlatIconButtonStyle}"
-                    Height="40"
-                    ToolTip="播放列表" />-->
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
         </StackPanel>
-
+        <ContentControl Grid.Row="1"
+                        Grid.Column="1"
+                        Content="{Binding CurrentViewModel}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type vm:AlbumViewModel}">
+                    <v:AlbumView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:AllPlayListViewModel}">
+                    <v:AllPlayListView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:ArtistViewModel}">
+                    <v:ArtistView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:FavoriteMusicViewModel}">
+                    <v:FavoriteMusicView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:LyricViewModel}">
+                    <v:LyricView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:MusicViewModel}">
+                    <v:MusicView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:RecentlyAddedViewModel}">
+                    <v:RecentlyAddedView />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
     </Grid>
 </Window>

@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace Common
 {
     public class BaseViewModel : ObservableObject
-    {
-        public virtual void OnNavigationTo(Dictionary<string, object>? parameters)
+    {        
+        public virtual void OnNavigationTo(Dictionary<string, object>? parameters = null)
         {
 
         }

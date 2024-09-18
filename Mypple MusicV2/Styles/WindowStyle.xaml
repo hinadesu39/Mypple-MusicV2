@@ -7,7 +7,7 @@
                 <!--  CornerRadius必须设置为0，否则在win7上，界面上方两侧外边框无法闭合  -->
                 <WindowChrome CornerRadius="0"
                               CaptionHeight="60"
-                              GlassFrameThickness="0 1 0 0"
+                              GlassFrameThickness="-1"
                               ResizeBorderThickness="5"
                               UseAeroCaptionButtons="False" />
             </Setter.Value>

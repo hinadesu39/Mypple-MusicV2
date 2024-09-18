@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 namespace Common
 {
-    public class NavigationService
+    public class NavigationService : INavigationService
     {
         private IServiceProvider serviceProvider;
         private Stack<BaseViewModel> history = new Stack<BaseViewModel>();
@@ -27,7 +27,7 @@ namespace Common
             this.serviceProvider = serviceProvider;
         }
 
-        public void NavigationTo<T>(Dictionary<string, object>? parameters)
+        public void NavigationTo<T>(Dictionary<string, object>? parameters = null)
             where T : BaseViewModel
         {
             CurrentViewModel = serviceProvider.GetService<T>()!;
@@ -41,7 +41,20 @@ namespace Common
             forwardHistory.Clear();
         }
 
-        public bool CanNavigateBack() => history.Count > 0;
+        public void NavigationTo(Type ViewModeltype, Dictionary<string, object>? parameters = null)
+        {
+            CurrentViewModel = (BaseViewModel)serviceProvider.GetService(ViewModeltype)!;
+
+            if (CurrentViewModel != null)
+            {
+                history.Push(CurrentViewModel);
+                CurrentViewModel!.OnNavigationTo(parameters);
+            }
+
+            forwardHistory.Clear();
+        }
+
+        public bool CanNavigateBack() => history.Count > 1;
 
         public bool CanNavigateForward() => forwardHistory.Count > 0;
 

@@ -5,269 +5,130 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shell;
-//模糊方法原文地址：https://www.cnblogs.com/TwilightLemon/p/17479921.html
+//原文地址https://slimenull.com/p/20240530104846/#%E8%83%8C%E6%99%AF%E6%A8%A1%E7%B3%8A-api
 namespace Common
 {
-    /// <summary>
-    /// 为窗口提供模糊特效。
-    /// </summary>
     public class WindowAccentCompositor
     {
-        public bool DarkMode = true;
+        [DllImport("DWMAPI")]
+        public static extern nint DwmSetWindowAttribute(nint hwnd, DwmWindowAttribute attribute, nint dataPointer, uint dataSize);
+        [DllImport("User32")]
+        public static extern bool SetWindowCompositionAttribute(nint hwnd, ref WindowCompositionAttributeData data);
+        [DllImport("DWMAPI")]
+        public static extern nint DwmExtendFrameIntoClientArea(nint hwnd, ref Margins margins);
 
-        private readonly Window _window;
-        private bool _isEnabled;
-        private int _blurColor;
-        private Action<Color> NoneCallback;
-
-        /// <summary>
-        /// 创建 <see cref="WindowAccentCompositor"/> 的一个新实例。
-        /// </summary>
-        /// <param name="window"></param>
-        /// <param name="enableBlurin">对ToolWindow启用模糊特效</param>
-        /// <param name="noneCallback">没有可以的模糊特效</param>
-        public WindowAccentCompositor(Window window, bool enableBlurin = false, Action<Color> noneCallback = null)
+        public enum DwmWindowAttribute
         {
-            _window = window;
-            _enableBlurin = enableBlurin;
-            NoneCallback = noneCallback;
+            NCRENDERING_ENABLED,
+            NCRENDERING_POLICY,
+            TRANSITIONS_FORCEDISABLED,
+            ALLOW_NCPAINT,
+            CAPTION_BUTTON_BOUNDS,
+            NONCLIENT_RTL_LAYOUT,
+            FORCE_ICONIC_REPRESENTATION,
+            FLIP3D_POLICY,
+            EXTENDED_FRAME_BOUNDS,
+            HAS_ICONIC_BITMAP,
+            DISALLOW_PEEK,
+            EXCLUDED_FROM_PEEK,
+            CLOAK,
+            CLOAKED,
+            FREEZE_REPRESENTATION,
+            PASSIVE_UPDATE_MODE,
+            USE_HOSTBACKDROPBRUSH,
+
+            // 表示是否使用暗色模式, 它会将窗体的模糊背景调整为暗色
+            USE_IMMERSIVE_DARK_MODE = 20,
+            WINDOW_CORNER_PREFERENCE = 33,
+            BORDER_COLOR,
+            CAPTION_COLOR,
+            TEXT_COLOR,
+            VISIBLE_FRAME_BORDER_THICKNESS,
+
+            // 背景类型, 值可以是: 自动, 无, 云母, 或者亚克力
+            SYSTEMBACKDROP_TYPE,
+            LAST
         }
 
-        private void _window_Activated(object? sender, EventArgs e)
+        public enum WindowBackdrop
         {
-            _window.Background = new SolidColorBrush(_color);
-        }
-
-        private void _window_Deactivated(object? sender, EventArgs e)
-        {
-            _window.Background = new SolidColorBrush(
-                   DarkMode ?
-                   Color.FromArgb(255, 32, 32, 23) :
-                   Color.FromArgb(255, 242, 242, 242)
-                   );
-        }
-
-        /// <summary>
-        /// 获取或设置此窗口模糊特效是否生效的一个状态。
-        /// 默认为 false，即不生效。
-        /// </summary>
-        [DefaultValue(false)]
-        public bool IsEnabled
-        {
-            get => _isEnabled;
-            set
-            {
-                _isEnabled = value;
-                OnIsEnabledChanged(value);
-            }
-        }
-        private Color _color;
-        /// <summary>
-        /// 获取或设置此窗口模糊特效叠加的颜色。
-        /// </summary>
-        public Color Color
-        {
-            get => _color;
-
-            set
-            {
-                _color = value;
-                _blurColor =
-               // 组装红色分量。
-               value.R << 0 |
-               // 组装绿色分量。
-               value.G << 8 |
-               // 组装蓝色分量。
-               value.B << 16 |
-               // 组装透明分量。
-               value.A << 24;
-            }
-        }
-
-        private void OnIsEnabledChanged(bool isEnabled)
-        {
-            Window window = _window;
-            var handle = new WindowInteropHelper(window).EnsureHandle();
-            Composite(handle, isEnabled);
-        }
-        /// <summary>
-        /// 在win11下对特定窗口启用模糊特效
-        /// </summary>
-        public bool _enableBlurin = false;
-        private void Composite(IntPtr handle, bool isEnabled)
-        {
-            // 操作系统版本判定。
-            var osVersion = Environment.OSVersion.Version;
-            var windows10_1809 = new Version(10, 0, 17763);
-            var windows10 = new Version(10, 0);
-            var windows11 = new Version(10, 0, 22621);
-            if (osVersion >= windows11 && !_enableBlurin)
-            {
-                if (!isEnabled)
-                {
-                    SetWindowBlur(handle, 0, BlurMode.None);
-                    return;
-                }
-                //对于win11需要  其它默认1的边框
-                WindowChrome.SetWindowChrome(_window, new WindowChrome()
-                {
-                    GlassFrameThickness = new Thickness(-1),
-                    CaptionHeight = 1
-                });
-                _window.Background = new SolidColorBrush(_color);
-                SetWindowBlur(handle, DarkMode ? 1 : 0, BlurMode.Acrylic);
-            }
-            else
-            {
-                // 创建 AccentPolicy 对象。
-                var accent = new AccentPolicy();
-
-                // 设置特效。
-                if (!isEnabled)
-                {
-                    accent.AccentState = AccentState.ACCENT_DISABLED;
-                }
-                else if (osVersion >= windows10_1809)
-                {
-                    //1803能用但是兼容性不好哇----  1903完美支持 
-
-                    // 如果系统在 Windows 10 (1809) 以上，则启用亚克力效果，并组合已设置的叠加颜色和透明度。
-                    //  请参见《在 WPF 程序中应用 Windows 10 真•亚克力效果》
-                    //  https://blog.walterlv.com/post/using-acrylic-in-wpf-application.html
-                    accent.AccentState = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND;
-                    accent.GradientColor = _blurColor;
-                }
-                else if (osVersion >= windows10)
-                {
-                    // 如果系统在 Windows 10 以上，则启用 Windows 10 早期的模糊特效。
-                    //  请参见《在 Windows 10 上为 WPF 窗口添加模糊特效》
-                    //  https://blog.walterlv.com/post/win10/2017/10/02/wpf-transparent-blur-in-windows-10.html
-                    accent.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
-                }
-                else
-                {
-                    // 暂时不处理其他操作系统：
-                    //  - Windows 8/8.1 不支持任何模糊特效
-                    //  - Windows Vista/7 支持 Aero 毛玻璃效果
-                    NoneCallback?.Invoke(Color);
-                    return;
-                }
-
-                // 将托管结构转换为非托管对象。
-                var accentPolicySize = Marshal.SizeOf(accent);
-                var accentPtr = Marshal.AllocHGlobal(accentPolicySize);
-                Marshal.StructureToPtr(accent, accentPtr, false);
-
-                // 设置窗口组合特性。
-                try
-                {
-                    // 设置模糊特效。
-                    var data = new WindowCompositionAttributeData
-                    {
-                        Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
-                        SizeOfData = accentPolicySize,
-                        Data = accentPtr,
-                    };
-                    SetWindowCompositionAttribute(handle, ref data);
-                }
-                finally
-                {
-                    // 释放非托管对象。
-                    Marshal.FreeHGlobal(accentPtr);
-                }
-            }
-        }
-
-        [DllImport("user32.dll")]
-        private static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
-
-        private enum AccentState
-        {
-            /// <summary>
-            /// 完全禁用 DWM 的叠加特效。
-            /// </summary>
-            ACCENT_DISABLED = 0,
-
-            /// <summary>
-            /// 
-            /// </summary>
-            ACCENT_ENABLE_GRADIENT = 1,
-            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
-            ACCENT_ENABLE_BLURBEHIND = 3,
-            ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,
-            ACCENT_INVALID_STATE = 5,
+            Auto = 0,
+            None = 1,
+            MainWindow = 2,
+            TransientWindow = 3,
+            TabbedWindow = 4
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct AccentPolicy
+        public struct WindowCompositionAttributeData
+        {
+            /// <summary>
+            /// A flag describing which value to get or set, specified as a value of the <see cref="WindowCompositionAttribute"/> enumeration. 
+            /// This parameter specifies which attribute to get or set, and the pvData member points to an object containing the attribute value.
+            /// </summary>
+            public WindowCompositionAttribute Attribute;
+
+            /// <summary>
+            /// When used with the GetWindowCompositionAttribute function, this member contains a pointer to a variable that will hold the value of the requested attribute when the function returns. <br/>
+            /// When used with the SetWindowCompositionAttribute function, it points an object containing the attribute value to set. <br/>
+            /// The type of the value set depends on the value of the Attrib member.
+            /// </summary>
+            public nint DataPointer;
+
+            /// <summary>
+            /// The size of the object pointed to by the pvData member, in bytes.
+            /// </summary>
+            public uint DataSize;
+        }
+
+        public enum WindowCompositionAttribute
+        {
+            // 省略其他未使用的字段
+            WcaAccentPolicy = 19,
+            // 省略其他未使用的字段
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct AccentPolicy
         {
             public AccentState AccentState;
-            public int AccentFlags;
+            public AccentFlags AccentFlags;
             public int GradientColor;
             public int AnimationId;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct WindowCompositionAttributeData
+        public enum AccentState
         {
-            public WindowCompositionAttribute Attribute;
-            public IntPtr Data;
-            public int SizeOfData;
+            Disabled,
+            EnableGradient = 1,           // 渐变 (实测没什么用)
+            EnableTransparent = 2,        // 透明 (实测没什么用)
+            EnableBlurBehind = 3,         // 背景模糊 (有用)
+            EnableAcrylicBlurBehind = 4,  // 背景亚克力模糊 (有用)
+            EnableHostBackdrop = 5,       // 没啥用
+            InvalidState = 6,
         }
-
-        private enum WindowCompositionAttribute
-        {
-            // 省略其他未使用的字段
-            WCA_ACCENT_POLICY = 19,
-            // 省略其他未使用的字段
-        }
-
-        /// <summary>
-        /// 当前操作系统支持的透明模糊特效级别。
-        /// </summary>
-        public enum BlurSupportedLevel
-        {
-            NotSupported,
-            Aero,
-            Blur,
-            Acrylic,
-        }
-
-
-        [DllImport("dwmapi.dll")]
-        static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE dwAttribute, ref int pvAttribute, int cbAttribute);
-
-        public static int SetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attribute, int parameter)
-            => DwmSetWindowAttribute(hwnd, attribute, ref parameter, Marshal.SizeOf<int>());
 
         [Flags]
-        public enum DWMWINDOWATTRIBUTE
+        public enum AccentFlags
         {
-            DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
-            DWMWA_SYSTEMBACKDROP_TYPE = 38
+            None = 0,
+            ExtendSize = 0x4,      // 启用此 flag 会导致窗体大小拓展至屏幕大小
+            LeftBorder = 0x20,     // 启用窗口左侧边框 (当 WindowStyle 为 None 时可以看出来)
+            TopBorder = 0x40,      // 启用窗口顶部边框 (同上)
+            RightBorder = 0x80,    // 启用窗口右侧边框 (同上)
+            BottomBorder = 0x100,  // 启用窗口底部边框
+
+            // 合起来, 启用窗口所有边框
+            AllBorder = LeftBorder | TopBorder | RightBorder | BottomBorder,
         }
-        public enum BlurMode
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Margins
         {
-            None = 1,
-            Acrylic = 3,
-            Mica = 2,
-            Tabbed = 4
-        }
-        /// <summary>
-        /// 应用模糊特效 for Win11
-        /// </summary>
-        /// <param name="win"></param>
-        /// <param name="color">1:Dark 0:Light</param>
-        public static void SetWindowBlur(IntPtr handle, int color, BlurMode mode)
-        {
-            SetWindowAttribute(
-                handle,
-                DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE,
-                color);
-            SetWindowAttribute(
-                handle,
-                DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE,
-                (int)mode);
+            public int LeftWidth;
+            public int RightWidth;
+            public int TopHeight;
+            public int BottomHeight;
         }
     }
 }

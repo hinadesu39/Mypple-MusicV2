@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Common;
+using Microsoft.Extensions.DependencyInjection;
 using Mypple_MusicV2.ViewModels;
 using Mypple_MusicV2.Views;
 using Serilog;
@@ -31,9 +32,31 @@ namespace Mypple_MusicV2
                         .WriteTo.File("log.txt")
                         .CreateLogger()
             );
+            services.AddSingleton<INavigationService,NavigationService> ();
+
+            services.AddSingleton<AlbumViewModel>();
+            services.AddSingleton<AlbumView>(sp => new AlbumView() { DataContext = sp.GetService<AlbumViewModel>() });
+
+            services.AddSingleton<AllPlayListViewModel>();
+            services.AddSingleton<AllPlayListView>(sp => new AllPlayListView() { DataContext = sp.GetService<AllPlayListViewModel>() });
+
+            services.AddSingleton<ArtistViewModel>();
+            services.AddSingleton<ArtistView>(sp => new ArtistView() { DataContext = sp.GetService<ArtistViewModel>() });
+
+            services.AddSingleton<FavoriteMusicViewModel>();
+            services.AddSingleton<FavoriteMusicView>(sp => new FavoriteMusicView() { DataContext = sp.GetService<FavoriteMusicViewModel>() });
+
+            services.AddSingleton<LyricViewModel>();
+            services.AddSingleton<LyricView>(sp => new LyricView() { DataContext = sp.GetService<LyricViewModel>() });
 
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<MainView>(sp => new MainView() { DataContext = sp.GetService<MainViewModel>() });
+
+            services.AddSingleton<MusicViewModel>();
+            services.AddSingleton<MusicView>(sp => new MusicView() { DataContext = sp.GetService<MusicViewModel>() });
+
+            services.AddSingleton<RecentlyAddedViewModel>();
+            services.AddSingleton<RecentlyAddedView>(sp => new RecentlyAddedView() { DataContext = sp.GetService<RecentlyAddedViewModel>() });
             return services.BuildServiceProvider();
         }
 
