@@ -54,20 +54,6 @@
                                MinHeight="{TemplateBinding MinHeight}" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <!--<TickBar x:Name="TopTick"
-                     Fill="{TemplateBinding Foreground}"
-                     Height="4"
-                     Margin="0,0,0,2"
-                     Placement="Top"
-                     Grid.Row="0"
-                     Visibility="Collapsed" />
-            <TickBar x:Name="BottomTick"
-                     Fill="{TemplateBinding Foreground}"
-                     Height="4"
-                     Margin="0,2,0,0"
-                     Placement="Bottom"
-                     Grid.Row="2"
-                     Visibility="Collapsed" />-->
             <Border x:Name="TrackBackground"
                     Background="{TemplateBinding Background}"
                     Grid.Row="1"
@@ -106,57 +92,6 @@
                 </Track.Thumb>
             </Track>
         </Grid>
-        <!--<ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="hc:TipElement.Placement"
-                               Value="Top" />
-                    <Condition Property="hc:TipElement.Visibility"
-                               Value="Visible" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Template"
-                        TargetName="Thumb"
-                        Value="{StaticResource TipSliderThumbHorizontalTop}" />
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="hc:TipElement.Placement"
-                               Value="Bottom" />
-                    <Condition Property="hc:TipElement.Visibility"
-                               Value="Visible" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Template"
-                        TargetName="Thumb"
-                        Value="{StaticResource TipSliderThumbHorizontalBottom}" />
-            </MultiTrigger>
-            <Trigger Property="TickPlacement"
-                     Value="TopLeft">
-                <Setter Property="Visibility"
-                        TargetName="TopTick"
-                        Value="Visible" />
-            </Trigger>
-            <Trigger Property="TickPlacement"
-                     Value="BottomRight">
-                <Setter Property="Visibility"
-                        TargetName="BottomTick"
-                        Value="Visible" />
-            </Trigger>
-            <Trigger Property="TickPlacement"
-                     Value="Both">
-                <Setter Property="Visibility"
-                        TargetName="TopTick"
-                        Value="Visible" />
-                <Setter Property="Visibility"
-                        TargetName="BottomTick"
-                        Value="Visible" />
-            </Trigger>
-            <Trigger Property="IsSelectionRangeEnabled"
-                     Value="true">
-                <Setter Property="Visibility"
-                        TargetName="Canvas_SelectionRange"
-                        Value="Visible" />
-            </Trigger>
-        </ControlTemplate.Triggers>-->
     </ControlTemplate>
     <Style x:Key="MusicProgressStyle"
            BasedOn="{StaticResource BaseStyle}"

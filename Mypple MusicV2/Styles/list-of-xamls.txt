@@ -6,3 +6,5 @@ ToggleButtonStyle.xaml
 TreeViewStyle.xaml
 VolumeControlStyle.xaml
 WindowStyle.xaml
+RadioButtonStyle.xaml
+DataGridStyle.xaml

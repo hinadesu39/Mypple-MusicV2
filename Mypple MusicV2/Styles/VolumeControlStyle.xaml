@@ -125,8 +125,8 @@
                                    StaysOpen="False"
                                    Placement="Bottom"
                                    AllowsTransparency="True">
-                                <StackPanel HorizontalAlignment="Center"
-                                            VerticalAlignment="Top">
+                                <!--<StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Top">-->
                                     <Border Background="{DynamicResource BackgroundBrush}"
                                             Height="140"
                                             Width="35"
@@ -151,7 +151,7 @@
                                                 Orientation="Vertical">
                                         </Slider>
                                     </Border>
-                                </StackPanel>
+                                <!--</StackPanel>-->
                             </Popup>
                         </Grid>
                     </Border>

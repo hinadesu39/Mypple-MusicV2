@@ -1,12 +1,8 @@
 ﻿using Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mypple_MusicV2.Views;
 using Serilog;
-using System.CodeDom;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Navigation;
 
 namespace Mypple_MusicV2.ViewModels
 {
@@ -21,6 +17,12 @@ namespace Mypple_MusicV2.ViewModels
 
         [ObservableProperty]
         private BaseViewModel currentViewModel;
+
+        [ObservableProperty]
+        private bool isDrawerRightOpen;
+
+        [ObservableProperty]
+        private bool isMenuOpen;
 
         public MainViewModel() { }
 

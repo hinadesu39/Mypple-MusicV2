@@ -26,8 +26,8 @@
                                    FontFamily="{StaticResource IconFont}"
                                    Text="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Content}"
                                    FontWeight="{TemplateBinding FontWeight}"
-                                   Foreground="{TemplateBinding Foreground}" 
-                                   VerticalAlignment="Center"/>
+                                   Foreground="{TemplateBinding Foreground}"
+                                   VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver"
@@ -42,6 +42,64 @@
                             <Setter TargetName="Content"
                                     Property="Text"
                                     Value="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Tag}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="UserToggleButtonStyle"
+           TargetType="ToggleButton">
+        <Setter Property="Width"
+                Value="240" />
+        <Setter Property="Height"
+                Value="40" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="FontFamily"
+                Value="{StaticResource IconFont}" />
+        <Setter Property="Foreground"
+                Value="{DynamicResource PrimaryTextBrush}" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome"
+                Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="borderIn"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{DynamicResource DefaultCornerRadius}">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Background="#22000000"
+                                    Height="32"
+                                    Width="32"
+                                    CornerRadius="32"
+                                    Margin="10 0 0 0">
+                                <TextBlock Text="&#xe685;"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Border>
+                            <TextBlock x:Name="Content"
+                                       HorizontalAlignment="Center"
+                                       Text="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Content}"
+                                       FontWeight="{TemplateBinding FontWeight}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       VerticalAlignment="Center"
+                                       Margin="10 0 0 0"/>
+                        </StackPanel>
+
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="#22000000" />
+                        </Trigger>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="#33000000" />
+
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
