@@ -121,6 +121,9 @@
                 <DataTemplate DataType="{x:Type vm:RecentlyAddedViewModel}">
                     <v:RecentlyAddedView />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:PlayListViewModel}">
+                    <v:PlayListView />
+                </DataTemplate>
             </ContentControl.Resources>
         </hc:TransitioningContentControl>
         <hc:DrawerContainer

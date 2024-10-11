@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Bogus;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,5 +45,13 @@ namespace Mypple_MusicV2.Models
             PausePlay, //暂停播放
             StopPlay //彻底关闭
         }
+
+        public static IEnumerable<Music> FakeMany(int count) => musicFaker.Generate((new Random()).Next(count,20));
+
+        public static readonly Faker<Music> musicFaker = new Faker<Music>()
+            .RuleFor(x => x.Id, Guid.NewGuid)
+            .RuleFor(x => x.Title, x => x.Person.FirstName)
+            .RuleFor(x => x.Artist, x => x.Person.LastName)
+            .RuleFor(x => x.Duration, x => x.Random.Double(180, 300));         
     }
 }

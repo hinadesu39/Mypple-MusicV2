@@ -22,12 +22,15 @@ namespace Common
         private bool isNavigated;
         [ObservableProperty]
         private ObservableCollection<NavigationItem> subNavigationItems;
+        [ObservableProperty]
+        private Dictionary<string, object> parameters;
 
-        public NavigationItem(string content, string toolTip, Type? viewModelType = null)
+        public NavigationItem(string content, string toolTip, Type viewModelType = null, Dictionary<string, object> parameters = null)
         {
             this.Content = content;
             this.ToolTip = toolTip;
             this.viewModelType = viewModelType;
+            this.parameters = parameters;
         }
     }
 }

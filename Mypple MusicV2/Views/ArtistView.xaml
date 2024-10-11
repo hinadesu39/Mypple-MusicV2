@@ -1,16 +1,20 @@
 ﻿<UserControl x:Class="Mypple_MusicV2.Views.ArtistView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Mypple_MusicV2.Views"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:m="clr-namespace:Mypple_MusicV2.Models"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:Mypple_MusicV2.Views"
+             xmlns:m="clr-namespace:Mypple_MusicV2.Models"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:v="clr-namespace:Mypple_MusicV2.Views"
-             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:Mypple_MusicV2.ViewModels"
              d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+    <d:UserControl.DataContext>
+        <vm:ArtistViewModel />
+    </d:UserControl.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -20,11 +24,11 @@
         <Border BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,0,0,1" />
         <TextBlock x:Name="Title"
-                   Text="艺人"
-                   VerticalAlignment="Center"
                    HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
                    FontSize="14"
-                   FontWeight="Bold" />
+                   FontWeight="Bold"
+                   Text="艺人" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" />
@@ -32,8 +36,10 @@
             </Grid.ColumnDefinitions>
             <Border BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="0,0,1,0" />
-            <ListBox Style="{StaticResource ArtistListBoxStyle}">
-                <ListBox.Items>
+            <ListBox x:Name="ArtistList"
+                     ItemsSource="{Binding Artists}"
+                     Style="{StaticResource FlatListBoxStyle}">
+                <d:ListBox.Items>
                     <m:Artist Name="稲葉曇"
                               LocalPicUrl="C:\Users\Hinadesu\Desktop\projects\Mypple Music\Mypple Music\Resource\postShelter.png" />
                     <m:Artist Name="春泥棒"
@@ -46,19 +52,51 @@
                               LocalPicUrl="C:\Users\Hinadesu\Desktop\projects\Mypple Music\Mypple Music\Resource\yorushika1.jpg" />
                     <m:Artist Name="雲と幽霊"
                               LocalPicUrl="C:\Users\Hinadesu\Desktop\projects\Mypple Music\Mypple Music\Resource\yorushika1.jpg" />
-                </ListBox.Items>
+                </d:ListBox.Items>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding NavigateCommand}"
-                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}" />
+                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ListBox>
             <hc:TransitioningContentControl Grid.Row="1"
                                             Grid.RowSpan="2"
                                             Grid.Column="1"
+                                            Content="{Binding ElementName=ArtistList, Path=SelectedItem}"
                                             TransitionMode="Bottom2Top">
-                
+                <hc:TransitioningContentControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <DockPanel LastChildFill="False">
+                                <Button Content="{Binding Name}"
+                                        Style="{StaticResource FlatTextButtonStyle}" />
+                            </DockPanel>
+                            <TextBlock Grid.Row="1"
+                                       Text="15张专辑，19首歌"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
+                                       VerticalAlignment="Center">
+                                <!--<TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}张专辑，{1}首歌">
+                                        <Binding Path="Albums.Count" />
+                                        <Binding Path="Musics.Count" />
+                                    </MultiBinding>
+                                </TextBlock.Text>-->
+                            </TextBlock>
+                            <ListBox Grid.Row="2"
+                                     ItemsSource="{Binding Albums}"
+                                     d:ItemsSource="{d:SampleData ItemCount=6}"
+                                     Style="{StaticResource AlbumListBoxStyle}">
+
+                            </ListBox>
+                        </Grid>
+                    </DataTemplate>
+                </hc:TransitioningContentControl.ContentTemplate>
             </hc:TransitioningContentControl>
         </Grid>
     </Grid>

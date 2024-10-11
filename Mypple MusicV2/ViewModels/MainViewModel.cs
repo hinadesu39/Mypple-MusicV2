@@ -1,8 +1,8 @@
-﻿using Common;
+﻿using System.Collections.ObjectModel;
+using Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
-using System.Collections.ObjectModel;
 
 namespace Mypple_MusicV2.ViewModels
 {
@@ -21,9 +21,6 @@ namespace Mypple_MusicV2.ViewModels
         [ObservableProperty]
         private bool isDrawerRightOpen;
 
-        [ObservableProperty]
-        private bool isMenuOpen;
-
         public MainViewModel() { }
 
         public MainViewModel(ILogger logger, INavigationService navigationService)
@@ -36,8 +33,9 @@ namespace Mypple_MusicV2.ViewModels
         [RelayCommand]
         public void Navigate(NavigationItem navigationItem)
         {
+            CurrentViewModel = null;
             if (!isBackgroundOperation && navigationItem.ViewModelType != null)
-                navigationService.NavigationTo(navigationItem.ViewModelType);
+                navigationService.NavigationTo(navigationItem.ViewModelType, navigationItem.Parameters);
         }
 
         [RelayCommand]
@@ -56,6 +54,7 @@ namespace Mypple_MusicV2.ViewModels
                 isBackgroundOperation = false;
             }
         }
+
         private void Init()
         {
             navigationService.CurrentViewModelChanged += () =>
@@ -64,7 +63,9 @@ namespace Mypple_MusicV2.ViewModels
             };
 
             NavigationItems = new ObservableCollection<NavigationItem>();
-            NavigationItems.Add(new NavigationItem("\uE74f", "最近添加", typeof(RecentlyAddedViewModel)));
+            NavigationItems.Add(
+                new NavigationItem("\uE74f", "最近添加", typeof(RecentlyAddedViewModel))
+            );
             NavigationItems.Add(new NavigationItem("\uE895", "艺人", typeof(ArtistViewModel)));
             NavigationItems.Add(new NavigationItem("\uEa0b", "专辑", typeof(AlbumViewModel)));
             NavigationItems.Add(new NavigationItem("\uE612", "歌曲", typeof(MusicViewModel)));
@@ -73,9 +74,21 @@ namespace Mypple_MusicV2.ViewModels
                 {
                     SubNavigationItems = new ObservableCollection<NavigationItem>()
                     {
-                        new NavigationItem("\uE602", "所有播放列表",typeof(AllPlayListViewModel)),
-                        new NavigationItem("\uE621", "喜爱的歌曲",typeof(FavoriteMusicViewModel))
-                    }
+                        new NavigationItem("\uE602", "所有播放列表", typeof(AllPlayListViewModel)),
+                        new NavigationItem("\uE621", "喜爱的歌曲", typeof(FavoriteMusicViewModel)),
+                        new NavigationItem(
+                            "\uEa86",
+                            "进击的巨人",
+                            typeof(PlayListViewModel),
+                            new Dictionary<string, object>() { { "111", 1 } }
+                        ),
+                        new NavigationItem(
+                            "\uEa86",
+                            "游戏的小曲",
+                            typeof(PlayListViewModel),
+                            new Dictionary<string, object>() { { "111", 2 } }
+                        ),
+                    },
                 }
             );
         }

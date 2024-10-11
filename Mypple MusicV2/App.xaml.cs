@@ -57,6 +57,9 @@ namespace Mypple_MusicV2
 
             services.AddSingleton<RecentlyAddedViewModel>();
             services.AddSingleton<RecentlyAddedView>(sp => new RecentlyAddedView() { DataContext = sp.GetService<RecentlyAddedViewModel>() });
+
+            services.AddSingleton<PlayListViewModel>();
+            services.AddSingleton<PlayListView>(sp => new PlayListView() { DataContext = sp.GetService<PlayListViewModel>() });
             return services.BuildServiceProvider();
         }
 
